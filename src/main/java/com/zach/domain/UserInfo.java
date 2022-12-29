@@ -1,4 +1,4 @@
-package com.zach.model;
+package com.zach.domain;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class UserInfo {
 
     @Id
-    private long id;
+    private Long id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId
@@ -29,22 +29,22 @@ public class UserInfo {
     private String intro;
 
     @Column(name = "fans", columnDefinition = "INT(8) UNSIGNED DEFAULT 0 COMMENT 'Number of fans'")
-    private int fans;
+    private Integer fans;
 
     @Column(name = "followings", columnDefinition = "INT(8) UNSIGNED DEFAULT 0 COMMENT 'Number of followings'")
-    private int followings;
+    private Integer followings;
 
     @Column(name = "gender", columnDefinition = "TINYINT(1) UNSIGNED DEFAULT 0 COMMENT 'Gender, 0:Male, 1:Female'")
-    private int gender;
+    private Integer gender;
 
     @Column(name = "birthday", columnDefinition = "DATE DEFAULT NULL")
     private LocalDate birthday;
 
     @Column(name = "credits", columnDefinition = "INT(8) DEFAULT 0 COMMENT 'points earned' ")
-    private int credits;
+    private Integer credits;
 
     @Column(name = "tier", columnDefinition = "TINYINT(1) DEFAULT 0 COMMENT 'Membership tier, 0-9, 0 means unsubscribed'")
-    private int tier;
+    private Integer tier;
 
     @Column(name = "create_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createTime;
