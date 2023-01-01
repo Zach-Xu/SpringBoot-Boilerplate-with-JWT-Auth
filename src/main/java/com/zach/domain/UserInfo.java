@@ -1,9 +1,12 @@
 package com.zach.domain;
 
+import lombok.Data;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
+@Data
 @Entity(name = "UserInfo")
 @Table(name = "tb_user_info")
 public class UserInfo {
@@ -11,7 +14,7 @@ public class UserInfo {
     @Id
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @MapsId
     @JoinColumn(
             name = "user_id",
@@ -20,6 +23,7 @@ public class UserInfo {
                     name = "user_info__user_fk"
             )
     )
+    @ToString.Exclude
     private User user;
 
     @Column(name = "city", columnDefinition = "VARCHAR(64) DEFAULT ''")
@@ -51,4 +55,5 @@ public class UserInfo {
 
     @Column(name = "update_time", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
     private LocalDateTime updateTime;
+
 }

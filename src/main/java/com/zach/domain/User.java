@@ -1,8 +1,12 @@
 package com.zach.domain;
 
+import lombok.Data;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
 @Entity(name = "User")
 @Table(name="tb_user")
 public class User {
@@ -33,7 +37,10 @@ public class User {
     @OneToOne(
             mappedBy = "user",
             orphanRemoval = true,
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE}
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            fetch = FetchType.LAZY
     )
+    @ToString.Exclude
     private UserInfo userInfo;
+
 }
