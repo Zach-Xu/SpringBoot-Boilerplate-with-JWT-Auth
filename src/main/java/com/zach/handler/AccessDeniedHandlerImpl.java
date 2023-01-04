@@ -1,6 +1,6 @@
 package com.zach.handler;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zach.dto.ResponseResult;
 import com.zach.utils.WebUtils;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,8 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         ResponseResult result = new ResponseResult(HttpStatus.FORBIDDEN.value(),"Not authorized");
-        String json = JSON.toJSONString(result);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(result);
         WebUtils.renderString(response,json);
     }
 }

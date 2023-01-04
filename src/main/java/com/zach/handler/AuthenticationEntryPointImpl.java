@@ -1,6 +1,6 @@
 package com.zach.handler;
 
-import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zach.dto.ResponseResult;
 import com.zach.utils.WebUtils;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,8 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         ResponseResult result = new ResponseResult(HttpStatus.UNAUTHORIZED.value(),"Authentication fail");
-        String json = JSON.toJSONString(result);
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(result);
         WebUtils.renderString(response,json);
     }
 }
