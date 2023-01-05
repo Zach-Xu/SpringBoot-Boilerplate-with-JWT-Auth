@@ -1,6 +1,8 @@
 package com.zach.utils;
 
 import com.zach.dto.ResponseResult;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,5 +22,13 @@ public class WebUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public  static String getErrorMessages(BindingResult bindingResult){
+        return bindingResult.getAllErrors()
+                .stream()
+                .map(ObjectError::getDefaultMessage)
+                .reduce((msg1, msg2) -> String.format("%s %s", msg1, msg2))
+                .orElse("Invalid fields");
     }
 }

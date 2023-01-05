@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                 // SecurityContext is not needed
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers("/login").anonymous()
+                .authorizeRequests().antMatchers("/login","/register").anonymous()
                 .anyRequest().authenticated();
 
         // allow cross-origin
