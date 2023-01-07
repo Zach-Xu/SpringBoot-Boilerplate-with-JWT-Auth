@@ -11,12 +11,12 @@ import java.util.UUID;
 
 public class JWTUtils {
 
-    public static final Long JWT_TTL = 60 * 60 *1000L;// 60 * 60 *1000  one hour
+    public static final Long JWT_TTL = 60 * 60 * 1000 * 24 * 14L;// 14 days
 
     public static final String JWT_KEY = "zach";
 
 
-    public static String createJWT( String payload, Long ttlMillis){
+    public static String createJWT(String payload, Long ttlMillis) {
         JwtBuilder jwtBuilder = getJWTBuilder(payload, ttlMillis, getUUID());
         return jwtBuilder.compact();
     }
@@ -35,12 +35,12 @@ public class JWTUtils {
     }
 
 
-    public static String getUUID(){
+    public static String getUUID() {
         String uuid = UUID.randomUUID().toString().replaceAll("-", "");
         return uuid;
     }
 
-    public static SecretKey getKey(){
+    public static SecretKey getKey() {
         byte[] encodedKey = Base64.getDecoder().decode(JWT_KEY);
         return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }
@@ -51,8 +51,8 @@ public class JWTUtils {
         SecretKey key = getKey();
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-        if(ttlMillis==null){
-            ttlMillis=JWT_TTL;
+        if (ttlMillis == null) {
+            ttlMillis = JWT_TTL;
         }
         long expMillis = nowMillis + ttlMillis;
         Date expDate = new Date(expMillis);
@@ -62,10 +62,9 @@ public class JWTUtils {
                 .setSubject(payload)
                 .setIssuer("zh")
                 .setIssuedAt(now)
-                .signWith(algo,key)
+                .signWith(algo, key)
                 .setExpiration(expDate);
     }
-
 
 
 }

@@ -13,6 +13,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import static com.zach.utils.RedisConst.CACHE_USER_TTL;
 import static com.zach.utils.RedisConst.LOGIN_USER_KEY;
 
 @Service
@@ -67,7 +71,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userDB, userDTO);
 
         // store in redis
-        redisTemplate.opsForValue().set(LOGIN_USER_KEY + userId, userDTO);
+        redisTemplate.opsForValue().set(LOGIN_USER_KEY + userId, userDTO, CACHE_USER_TTL, TimeUnit.DAYS);
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("user", userDTO);
@@ -97,7 +101,7 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(newUser, userDTO);
 
-        redisTemplate.opsForValue().set(LOGIN_USER_KEY + userId, userDTO);
+        redisTemplate.opsForValue().set(LOGIN_USER_KEY + userId, userDTO, CACHE_USER_TTL, TimeUnit.DAYS);
 
         Map<String, Object> userMap = new HashMap<>();
         userMap.put("user", userDTO);
@@ -109,7 +113,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseResult logout() {
-        // TODO
-        return null;
+        // get userId from SecurityContextHolder
+        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UserDTO user = (UserDTO) authentication.getPrincipal();
+        String userId = user.getId().toString();
+        // delete value from redis
+        String redisKey = LOGIN_USER_KEY + userId;
+        redisTemplate.delete(redisKey);
+        return new ResponseResult(200, "Logout successful");
     }
 }

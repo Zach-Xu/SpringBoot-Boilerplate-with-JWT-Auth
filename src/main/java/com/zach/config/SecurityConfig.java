@@ -1,5 +1,6 @@
 package com.zach.config;
 
+import com.zach.filter.JwtTokenVerifier;
 import com.zach.handler.AccessDeniedHandlerImpl;
 import com.zach.handler.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
@@ -28,8 +30,10 @@ public class SecurityConfig {
     }
 
     @Autowired
-    AuthenticationEntryPointImpl authenticationEntryPoint;
+    JwtTokenVerifier jwtTokenVerifier;
 
+    @Autowired
+    AuthenticationEntryPointImpl authenticationEntryPoint;
     @Autowired
     AccessDeniedHandlerImpl accessDeniedHandler;
 
@@ -39,11 +43,14 @@ public class SecurityConfig {
                 // SecurityContext is not needed
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers("/login","/register").anonymous()
+                .authorizeRequests().antMatchers("/user/login","/user/register").anonymous()
                 .anyRequest().authenticated();
 
         // allow cross-origin
         http.cors();
+
+        // add custom filters
+        http.addFilterBefore(jwtTokenVerifier, UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)

@@ -12,22 +12,23 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping(path = "/user")
 public class UserController {
 
     @Autowired
     UserService userService;
 
     @GetMapping("hello")
-    public ResponseResult<String> hello (){
+    public ResponseResult hello (){
         return new ResponseResult<>(200,"Hello");
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseResult login(@RequestBody User user){
         return userService.login(user);
     }
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public ResponseResult register(@RequestBody @Valid User user, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             String messages = WebUtils.getErrorMessages(bindingResult);
@@ -36,7 +37,7 @@ public class UserController {
         return  userService.register(user);
     }
 
-    @RequestMapping("logout")
+    @GetMapping("/logout")
     public ResponseResult logout(){
         return userService.logout();
     }
